@@ -1,155 +1,65 @@
-I. PHẦN LÝ THUYẾT & CÂU HỎI NGẮN
-Câu 1: Phân biệt Value Types và Reference Types trong C#
-Value Types (kiểu giá trị) và Reference Types (kiểu tham chiếu) khác nhau chủ yếu ở cách biến chứa dữ liệu.
+# BÀI TẬP LÝ THUYẾT C#
 
-Value Type: biến chứa trực tiếp giá trị.
+> **Họ và tên:** Nguyễn Vũ Nhật Minh  
+> **Mã số sinh viên:** 24810320314  
 
-Ví dụ: int, double, bool, struct, enum.
+---
 
-Khi gán một biến Value Type cho biến khác, giá trị được sao chép.
+## I. PHẦN LÝ THUYẾT & CÂU HỎI NGẮN
 
-Thông thường, biến cục bộ có thể nằm trên Stack, nhưng không nên hiểu rằng mọi Value Type luôn nằm trên Stack; vị trí thực tế phụ thuộc vào ngữ cảnh và cách CLR quản lý bộ nhớ.
+### CÂU HỎI
 
-Reference Type: biến chứa tham chiếu (reference) đến đối tượng được lưu trong Heap.
+* **Câu 1:** Trình bày sự khác nhau giữa Value Types (Kiểu giá trị) và Reference Types (Kiểu tham chiếu) trong C# về cơ chế lưu trữ vùng nhớ (Stack vs Heap).
+* **Câu 2:** Tính năng Init-only Properties (init) trong C# 9/10 khác gì so với thuộc tính có set thông thường? Nêu trường hợp sử dụng thực tế.
+* **Câu 3:** Phân biệt sự khác nhau giữa phương thức virtual ở lớp cha và phương thức override ở lớp con khi triển khai tính Đa hình (Polymorphism).
+* **Câu 4:** Tại sao một thành phần được khai báo là static trong Lớp (Class) lại không thể truy xuất thông qua một thể hiện (Object Instance) được tạo bằng toán tử new?
 
-Ví dụ: class, string, array, delegate.
+---
 
-Khi gán một biến Reference Type cho biến khác, tham chiếu được sao chép, nên hai biến có thể cùng trỏ đến một đối tượng.
+### BÀI LÀM
 
-Ví dụ:
+#### Câu 1: Phân biệt Value Types và Reference Types về cơ chế lưu trữ vùng nhớ
 
-int a = 10;
-int b = a;
-b = 20;
+| Tiêu chí | Value Types (Kiểu giá trị) | Reference Types (Kiểu tham chiếu) |
+| :--- | :--- | :--- |
+| **Các kiểu đại diện** | `int`, `float`, `bool`, `struct`, `enum`, ... | `string`, `object`, `class`, `interface`, `delegate`, `array`, ... |
+| **Cơ chế lưu trữ** | Biến chứa **trực tiếp dữ liệu/giá trị**. Được lưu trên **Stack** (khi là biến cục bộ trong phương thức). Nếu thuộc về một `class`, nó nằm trên **Heap** cùng với class đó. | Biến chỉ chứa **địa chỉ con trỏ (tham chiếu)**. Bản thân đối tượng dữ liệu thực sự luôn được cấp phát và lưu trữ trên **Heap**. |
+| **Gán & Sao chép** | Tạo ra một **bản sao dữ liệu độc lập**. Thay đổi biến này hoàn toàn không ảnh hưởng đến biến kia. | Sao chép **địa chỉ tham chiếu**. Cả 2 biến cùng trỏ về một vùng nhớ trên Heap; thay đổi qua biến này sẽ đổi luôn giá trị của biến kia. |
+| **Quản lý vùng nhớ** | Tự động giải phóng ngay khi ra khỏi phạm vi (scope) của phương thức. | Được quản lý và dọn dẹp tự động bởi bộ gom rác **Garbage Collector (GC)**. |
 
-// a vẫn bằng 10
+---
 
-class Student
-{
-    public string Name;
-}
+#### Câu 2: Init-only Properties (`init`) vs Normal `set`
 
-Student s1 = new Student();
-s1.Name = "An";
+* **Sự khác nhau:**
+  * **Normal `set`:** Cho phép gán hoặc thay đổi lại giá trị của thuộc tính ở **bất kỳ thời điểm nào** trong suốt vòng đời của đối tượng.
+  * **Init-only (`init`):** Chỉ cho phép gán giá trị **khi khởi tạo đối tượng** (thông qua Constructor hoặc Object Initializer). Sau khi khởi tạo xong, thuộc tính sẽ trở thành Read-Only (không thể sửa đổi).
 
-Student s2 = s1;
-s2.Name = "Binh";
+* **Trường hợp sử dụng thực tế:**
+  * Sử dụng khi muốn thiết kế các **đối tượng bất biến (Immutable Objects)**, đảm bảo dữ liệu không bị thay đổi ngoài ý muốn sau khi đã tạo xong.
+  * Thường dùng cho: `Id` của người dùng, đối tượng cấu hình hệ thống (`AppConfig`), hoặc các lớp DTO truyền nhận dữ liệu giữa các tầng (Layer) trong ứng dụng.
 
-// s1.Name cũng là "Binh"
+---
 
-Lưu ý: Cách nói "Value Type = Stack, Reference Type = Heap" là cách đơn giản hóa. Chính xác hơn là Value Type lưu trực tiếp giá trị, còn Reference Type lưu một tham chiếu đến đối tượng; việc dữ liệu thực tế nằm ở đâu còn phụ thuộc vào ngữ cảnh thực thi.
+#### Câu 3: Phân biệt `virtual` (Lớp cha) và `override` (Lớp con)
 
-Câu 2: init khác gì set thông thường?
-init được giới thiệu trong C# 9, cho phép thuộc tính chỉ được gán trong quá trình khởi tạo đối tượng, sau đó không thể thay đổi.
+* **`virtual` (Lớp cha):** 
+  * Khai báo một phương thức ở lớp cha mà các lớp con có quyền ghi đè.
+  * Lớp cha **bắt buộc phải có sẵn phần cài đặt mặc định** (default implementation) cho phương thức này.
 
-set: có thể gán hoặc thay đổi giá trị bất kỳ lúc nào mà setter cho phép.
+* **`override` (Lớp con):** 
+  * Được khai báo ở lớp con để **thay thế hoàn toàn phần cài đặt mặc định của lớp cha** bằng logic xử lý riêng của lớp con.
 
-init: chỉ cho phép gán khi:
+* **Vai trò trong tính Đa hình (Polymorphism):** 
+  * Khi gọi một phương thức qua biến kiểu lớp cha nhưng tham chiếu đến đối tượng lớp con, C# Runtime sẽ kiểm tra bảng phương thức ảo (Virtual Method Table) và thực thi phiên bản `override` ở lớp con thay vì phương thức `virtual` ở lớp cha.
 
-Khởi tạo bằng object initializer.
+---
 
-Trong constructor.
+#### Câu 4: Tại sao thành phần `static` không thể truy xuất qua một Instance?
 
-Trong một số ngữ cảnh khởi tạo hợp lệ khác.
+* **Về mặt quản lý vùng nhớ:** 
+  * Thành phần `static` (biến, phương thức) thuộc về **bản thân Lớp (Class)** chứ không thuộc về bất kỳ thể hiện (Instance) cụ thể nào.
+  * Vùng nhớ cho thành phần `static` được cấp phát duy nhất một lần khi Class được tải vào bộ nhớ. Trong khi đó, mỗi Instance tạo bằng `new` chỉ quản lý dữ liệu riêng biệt (Instance Members) của bản thân nó.
 
-Ví dụ:
-
-class Student
-{
-    public string Name { get; init; }
-    public int Age { get; set; }
-}
-
-Sử dụng:
-
-Student student = new Student
-{
-    Name = "Nguyen Van A",
-    Age = 20
-};
-
-student.Age = 21;       // Hợp lệ
-student.Name = "B";     // Lỗi biên dịch
-
-Trường hợp thực tế: init phù hợp với các đối tượng mà một số thông tin cần bất biến sau khi khởi tạo, chẳng hạn:
-
-class User
-{
-    public int Id { get; init; }
-    public string Email { get; init; }
-    public string DisplayName { get; set; }
-}
-
-Id và Email có thể được xác định lúc tạo User và không cho phép thay đổi tùy ý về sau.
-
-Câu 3: virtual và override trong tính đa hình
-virtual được khai báo ở lớp cha, cho biết phương thức có thể được lớp con ghi đè.
-
-override được khai báo ở lớp con, dùng để cung cấp cách triển khai mới cho phương thức virtual của lớp cha.
-
-Ví dụ:
-
-class Animal
-{
-    public virtual void Sound()
-    {
-        Console.WriteLine("Animal sound");
-    }
-}
-
-class Dog : Animal
-{
-    public override void Sound()
-    {
-        Console.WriteLine("Woof");
-    }
-}
-
-Khi sử dụng:
-
-Animal animal = new Dog();
-animal.Sound();
-
-Kết quả:
-
-Woof
-
-Đây chính là đa hình (Polymorphism): dù biến animal có kiểu Animal, phương thức được thực thi là phiên bản Sound() của Dog.
-
-Có thể hiểu ngắn gọn:
-
-Từ khóa	Được dùng ở	Ý nghĩa
-virtual	Lớp cha	Cho phép lớp con ghi đè
-override	Lớp con	Ghi đè phương thức của lớp cha
-
-Câu 4: Tại sao static không truy xuất thông qua Object Instance?
-Thành phần static thuộc về chính lớp (Class), không thuộc về từng đối tượng (Object Instance).
-
-Ví dụ:
-
-class Student
-{
-    public static int Count = 0;
-}
-
-Count chỉ có một bản sao dùng chung cho toàn bộ lớp Student, thay vì mỗi object Student có một Count riêng.
-
-Vì vậy, cách truy xuất đúng là:
-
-Student.Count++;
-
-Không phải:
-
-Student s = new Student();
-s.Count++;       // Không được truy xuất static theo cách này
-
-Lý do là khi tạo:
-
-Student s = new Student();
-
-new tạo ra một instance của Student, nhưng static Count không thuộc instance đó. Nó thuộc về type Student.
-
-Có thể ghi nhớ:
-
-Instance member → truy xuất qua Object.
-Static member → truy xuất qua Class.
+* **Về mặt thiết kế ngôn ngữ:** 
+  * C# cố tình ngăn cản việc gọi `instance.StaticMember` để **tránh gây hiểu nhầm về mặt logic**: giúp người lập trình nhận biết rõ ràng đây là dữ liệu/hành vi dùng chung cho toàn hệ thống, chứ không bị phụ thuộc hay thay đổi theo từng đối tượng cụ thể.
