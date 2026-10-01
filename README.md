@@ -1,7 +1,7 @@
 # BÀI TẬP LÝ THUYẾT C#
 
-> **Họ và tên:** Hoàng Gia H  
-> **Mã số sinh viên:**   
+> **Họ và tên:** Hoàng Gia Hưng
+> **Mã số sinh viên:** 24810320102
 
 ---
 
